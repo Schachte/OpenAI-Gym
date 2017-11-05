@@ -20,9 +20,9 @@ score_requirement = 50
 initial_games = 10000
 
 
-def random_game_initializer():
+def random_game_initializer(simulation_count=10):
     '''Randomly plays x amount of games'''
-    for episode in range(5):
+    for episode in range(simulation_count):
         env.reset()
         for t in range(goal_steps):
             # This will visualize the environment (expensive)
@@ -135,10 +135,19 @@ def neural_network_model(input_size):
     return model
 
 
+visualize_game_play = raw_input('Do you want to see sample gameplay?: 0/1')
+if (visualize_game_play == '1'):
+    game_count = raw_input('Input number of simulations to visualize: ')
+    print('Running simulations')
+    random_game_initializer(int(game_count))
+
 training_data = initial_population()
 model = train_model(training_data)
 scores = []
 choices = []
+viz = 0
+if (raw_input("Do you want to visualize outcome? 0/1 ") == '1'):
+    viz = 1
 
 for each_game in range(10):
     score = 0
@@ -148,7 +157,8 @@ for each_game in range(10):
 
     for _ in range(goal_steps):
         # Uncomment for game graphics simulation
-        # env.render()
+        if viz == 1:
+            env.render()
         if (len(prev_obs) == 0):
             action = random.randrange(0, 2)
 
