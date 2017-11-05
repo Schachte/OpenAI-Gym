@@ -99,7 +99,7 @@ def train_model(training_data, model=False):
     if not model:
         model = neural_network_model(input_size=len(X[0]))
 
-    model.fit({'input': X}, {'targets': y}, n_epoch=5, snapshot_step=500,
+    model.fit({'input': X}, {'targets': y}, n_epoch=3, snapshot_step=500,
               show_metric=True, run_id='openaistuff')
 
     return model
@@ -111,19 +111,19 @@ def neural_network_model(input_size):
 
     # Define 5 fully connected network layers with 128, 256, 512, 256, 128
     # neuron structure for each layer respectively.
-    network = fully_connected(network, 128, activation='relu')
+    network = fully_connected(network, 64, activation='relu')
     network = dropout(network, 0.8)
 
-    network = fully_connected(network, 256, activation='relu')
+    network = fully_connected(network, 128, activation='relu')
     network = dropout(network, 0.8)
 
     network = fully_connected(network, 512, activation='relu')
     network = dropout(network, 0.8)
 
-    network = fully_connected(network, 256, activation='relu')
+    network = fully_connected(network, 32, activation='relu')
     network = dropout(network, 0.8)
 
-    network = fully_connected(network, 128, activation='relu')
+    network = fully_connected(network, 64, activation='relu')
     network = dropout(network, 0.8)
 
     # 2 would represent the number of output actions
@@ -147,7 +147,8 @@ for each_game in range(10):
     env.reset()
 
     for _ in range(goal_steps):
-        env.render()
+        # Uncomment for game graphics simulation
+        # env.render()
         if (len(prev_obs) == 0):
             action = random.randrange(0, 2)
 
@@ -166,5 +167,10 @@ for each_game in range(10):
     scores.append(score)
 
     print('Average score', sum(scores) / len(scores))
+
+    if (sum(scores) / len(scores) >= 200):
+        model.save('AWESOMEMODEL.model')
+        print('Model saved successfully!')
+
     print('Choice 1: {}, Choice 0 {}'.format(choices.count(1) / len(choices),
                                              choices.count(0) / len(choices)))
