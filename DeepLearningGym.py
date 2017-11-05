@@ -21,7 +21,10 @@ initial_games = 10000
 
 
 def random_game_initializer(simulation_count=10):
-    '''Randomly plays x amount of games'''
+    '''
+        Randomly plays x amount of games
+        Used to simulate what a failing robot play looks like
+    '''
     for episode in range(simulation_count):
         env.reset()
         for t in range(goal_steps):
@@ -50,9 +53,14 @@ def initial_population():
 
         # This is the actual game that is happening
         for _ in range(goal_steps):
+
+            # Basically some epsilon greedy approach to picking left-right move
             action = random.randrange(0, 2)
+
+            # Gather all the information post movement after taking action
             observation, reward, done, info = env.step(action)
 
+            # Store that observation information into the memory buffer
             if (len(previous_observation) > 0):
                 game_memory.append([previous_observation, action])
 
@@ -72,6 +80,7 @@ def initial_population():
                 elif data[1] == 0:
                     output = [1, 0]
 
+                # Training data will consist of feeding in good results
                 training_data.append([data[0], output])
 
         env.reset()
@@ -90,7 +99,7 @@ def initial_population():
 def train_model(training_data, model=False):
     '''Train the neural network model using the training data'''
 
-    # If you saved a previous moddel, you can load it into the function
+    # If you saved a previous model, you can load it into the function
     X = np.array([i[0] for i in training_data]).reshape(-1,
                                                         len(training_data[0][0]),
                                                         1)
